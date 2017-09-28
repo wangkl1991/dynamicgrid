@@ -6,20 +6,31 @@
 	<meta charset="UTF-8">
 	<title>canvas</title>
 	<style>body{text-align: center;background: #F7FAFC;overflow: hidden;background: #fff;}#canvas{display: inline-block;}</style>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+	<style type="text/css">
+		#canvas{
+			position: absolute;
+			left: 0px;
+			top: 0px;
+			z-index: -1;
+		}
+	</style>
 </head>
 <body>
 	<canvas id="canvas"></canvas>
 	<script>
 		//定义画布宽高和生成点的个数
-		var WIDTH = window.innerWidth, HEIGHT = window.innerHeight, POINT = 35;
-		
+		var POINT = 35;
 		var canvas = document.getElementById('canvas');
-		canvas.width = WIDTH,
-		canvas.height = HEIGHT;
-		var context = canvas.getContext('2d');
-		context.strokeStyle = 'rgba(0,0,0,0.02)',
-		context.strokeWidth = 1,
-		context.fillStyle = 'rgba(0,0,0,0.05)';
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		var WIDTH = canvas.width;
+		var HEIGHT = canvas.height;
+
+		var ctx =canvas.getContext('2d')
+		ctx.strokeStyle = 'rgba(0,0,0,0.02)',
+		ctx.strokeWidth = 1,
+		ctx.fillStyle = 'rgba(0,0,0,0.05)';
 		var circleArr = [];
 
 		//线条：开始xy坐标，结束xy坐标，线条透明度
@@ -44,39 +55,39 @@
 			return Math.floor(Math.random()*(max-min+1)+min);
 		}
 		// 绘制原点
-		function drawCricle (cxt, x, y, r, moveX, moveY) {
+		function drawCricle (ctx, x, y, r, moveX, moveY) {
 			var circle = new Circle(x, y, r, moveX, moveY)
-			cxt.beginPath()
-			cxt.arc(circle.x, circle.y, circle.r, 0, 2*Math.PI)
-			cxt.closePath()
-			cxt.fill();
+			ctx.beginPath()
+			ctx.arc(circle.x, circle.y, circle.r, 0, 2*Math.PI)
+			ctx.closePath()
+			ctx.fill();
 			return circle;
 		}
 		//绘制线条
-		function drawLine (cxt, x, y, _x, _y, o) {
+		function drawLine (ctx, x, y, _x, _y, o) {
 			var line = new Line(x, y, _x, _y, o)
-			cxt.beginPath()
-			cxt.strokeStyle = 'rgba(0,0,0,'+ o +')'
-			cxt.moveTo(line.beginX, line.beginY)
-			cxt.lineTo(line.closeX, line.closeY)
-			cxt.closePath()
-			cxt.stroke();
+			ctx.beginPath()
+			ctx.strokeStyle = 'rgba(0,0,0,'+ o +')'
+			ctx.moveTo(line.beginX, line.beginY)
+			ctx.lineTo(line.closeX, line.closeY)
+			ctx.closePath()
+			ctx.stroke();
 
 		}
 		//初始化生成原点
 		function init () {
 			circleArr = [];
 			for (var i = 0; i < POINT; i++) {
-				circleArr.push(drawCricle(context, num(WIDTH), num(HEIGHT), num(15, 2), num(10, -10)/40, num(10, -10)/40));
+				circleArr.push(drawCricle(ctx, num(WIDTH), num(HEIGHT), num(15, 2), num(10, -10)/40, num(10, -10)/40));
 			}
 			draw();
 		}
 
 		//每帧绘制
 		function draw () {
-			context.clearRect(0,0,canvas.width, canvas.height);
+			ctx.clearRect(0,0,canvas.width, canvas.height);
 			for (var i = 0; i < POINT; i++) {
-				drawCricle(context, circleArr[i].x, circleArr[i].y, circleArr[i].r);
+				drawCricle(ctx, circleArr[i].x, circleArr[i].y, circleArr[i].r);
 			}
 			for (var i = 0; i < POINT; i++) {
 				for (var j = 0; j < POINT; j++) {
@@ -87,7 +98,7 @@
 						var C = 1/lineLength*7-0.009;
 						var lineOpacity = C > 0.03 ? 0.03 : C;
 						if (lineOpacity > 0) {
-							drawLine(context, circleArr[i].x, circleArr[i].y, circleArr[i+j].x, circleArr[i+j].y, lineOpacity);
+							drawLine(ctx, circleArr[i].x, circleArr[i].y, circleArr[i+j].x, circleArr[i+j].y, lineOpacity);
 						}
 					}
 				}
@@ -113,5 +124,26 @@
 		}
 
 	</script>
+    <div style="padding: 40px" class="clearfix">
+
+    	<form>
+    		<div class="form-group">
+    			<label for="email">Email <sup style="color: red">*</sup></label>
+    			<input type="email" id="email" class="form-control" formControlName="email">
+    		</div>
+    		<div class="form-group">
+    			<label for="password">Password <sup style="color: red">*</sup></label>
+    			<input type="password" id="password" class="form-control" formControlName="password">
+    		</div>
+    		<div style="padding: 10px 0px 35px 0px">
+    			<div class="checkbox">
+    				<label><input type="checkbox"/>Keep me logged in </label>
+    			</div>
+    		</div>
+    		<div>
+    			<button class="btn btn-primart btn-login" type="submit"> log in</button>
+    		</div>
+    	</form>
+    	</div>
 </body>
 </html>
